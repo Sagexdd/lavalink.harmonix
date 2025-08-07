@@ -1,157 +1,97 @@
-const apiURL = '/api/stats'; // Vercel API route
+import { getLavalinkStats } from './api/stats.js';
 
-let memoryChart, cpuChart, playerChart;
+// DOM elements
+const cards = {
+  players: document.getElementById("players"),
+  playingPlayers: document.getElementById("playingPlayers"),
+  uptime: document.getElementById("uptime"),
+  systemLoad: document.getElementById("systemLoad"),
+  lavalinkLoad: document.getElementById("lavalinkLoad"),
+  memoryFree: document.getElementById("memoryFree"),
+  memoryUsed: document.getElementById("memoryUsed")
+};
 
-async function fetchStats() {
-  try {
-    const res = await fetch(apiURL);
-    const data = await res.json();
-
-    if (!data || !data.memory) throw new Error('Invalid response');
-
-    // Update stat boxes
-    document.getElementById("players").textContent = data.players;
-    document.getElementById("playing").textContent = data.playingPlayers;
-    document.getElementById("uptime").textContent = formatUptime(data.uptime);
-    document.getElementById("memUsed").textContent = formatMB(data.memory.used);
-    document.getElementById("memFree").textContent = formatMB(data.memory.free);
-    document.getElementById("memAlloc").textContent = formatMB(data.memory.allocated);
-    document.getElementById("cores").textContent = data.cpu.cores;
-    document.getElementById("sysLoad").textContent = (data.cpu.systemLoad * 100).toFixed(2) + "%";
-    document.getElementById("lavaLoad").textContent = (data.cpu.lavalinkLoad * 100).toFixed(2) + "%";
-
-    // Push to charts
-    updateCharts(data);
-
-  } catch (e) {
-    console.error("Failed to load stats", e);
-  }
-}
-
-function formatMB(bytes) {
-  return (bytes / 1024 / 1024).toFixed(1) + " MB";
-}
+let cpuChart, memoryChart;
 
 function formatUptime(ms) {
-  const sec = Math.floor(ms / 1000);
-  const d = Math.floor(sec / 86400);
-  const h = Math.floor((sec % 86400) / 3600);
-  const m = Math.floor((sec % 3600) / 60);
-  return `${d}d ${h}h ${m}m`;
+  let seconds = Math.floor(ms / 1000);
+  let minutes = Math.floor(seconds / 60);
+  let hours = Math.floor(minutes / 60);
+  let days = Math.floor(hours / 24);
+
+  seconds %= 60;
+  minutes %= 60;
+  hours %= 24;
+
+  return `${days}d ${hours}h ${minutes}m ${seconds}s`;
 }
 
-// Init charts
-function initCharts() {
-  const memCtx = document.getElementById("memoryChart").getContext("2d");
-  const cpuCtx = document.getElementById("cpuChart").getContext("2d");
-  const playerCtx = document.getElementById("playerChart").getContext("2d");
+async function fetchAndUpdateStats() {
+  const data = await getLavalinkStats();
+  if (!data) {
+    Object.values(cards).forEach(el => el.textContent = "Error");
+    return;
+  }
 
-  memoryChart = new Chart(memCtx, {
+  cards.players.textContent = data.players ?? 0;
+  cards.playingPlayers.textContent = data.playingPlayers ?? 0;
+  cards.uptime.textContent = formatUptime(data.uptime ?? 0);
+  cards.systemLoad.textContent = (data.cpu?.systemLoad * 100).toFixed(2) + "%";
+  cards.lavalinkLoad.textContent = (data.cpu?.lavalinkLoad * 100).toFixed(2) + "%";
+  cards.memoryFree.textContent = (data.memory?.free / 1024 / 1024).toFixed(1) + " MB";
+  cards.memoryUsed.textContent = (data.memory?.used / 1024 / 1024).toFixed(1) + " MB";
+
+  const timestamp = new Date().toLocaleTimeString();
+  updateChart(cpuChart, timestamp, [
+    (data.cpu?.systemLoad * 100).toFixed(2),
+    (data.cpu?.lavalinkLoad * 100).toFixed(2)
+  ]);
+
+  updateChart(memoryChart, timestamp, [
+    (data.memory?.free / 1024 / 1024).toFixed(1),
+    (data.memory?.used / 1024 / 1024).toFixed(1)
+  ]);
+}
+
+function createChart(ctx, label, labels, colors) {
+  return new Chart(ctx, {
     type: "line",
     data: {
       labels: [],
-      datasets: [
-        {
-          label: "Used",
-          data: [],
-          borderColor: "#ff4d4d",
-          fill: false,
-        },
-        {
-          label: "Free",
-          data: [],
-          borderColor: "#66ff66",
-          fill: false,
-        },
-      ],
+      datasets: labels.map((l, i) => ({
+        label: l,
+        data: [],
+        borderColor: colors[i],
+        tension: 0.4,
+        fill: false
+      }))
     },
-    options: { animation: false, responsive: true },
-  });
-
-  cpuChart = new Chart(cpuCtx, {
-    type: "line",
-    data: {
-      labels: [],
-      datasets: [
-        {
-          label: "System Load",
-          data: [],
-          borderColor: "#ffcc00",
-          fill: false,
-        },
-        {
-          label: "Lavalink Load",
-          data: [],
-          borderColor: "#33ccff",
-          fill: false,
-        },
-      ],
-    },
-    options: { animation: false, responsive: true },
-  });
-
-  playerChart = new Chart(playerCtx, {
-    type: "line",
-    data: {
-      labels: [],
-      datasets: [
-        {
-          label: "Players",
-          data: [],
-          borderColor: "#ff4dff",
-          fill: false,
-        },
-        {
-          label: "Playing",
-          data: [],
-          borderColor: "#66ccff",
-          fill: false,
-        },
-      ],
-    },
-    options: { animation: false, responsive: true },
+    options: {
+      responsive: true,
+      animation: false,
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
   });
 }
 
-function updateCharts(data) {
-  const now = new Date().toLocaleTimeString();
-
-  // Memory
-  memoryChart.data.labels.push(now);
-  memoryChart.data.datasets[0].data.push((data.memory.used / 1024 / 1024).toFixed(1));
-  memoryChart.data.datasets[1].data.push((data.memory.free / 1024 / 1024).toFixed(1));
-  trimData(memoryChart);
-
-  // CPU
-  cpuChart.data.labels.push(now);
-  cpuChart.data.datasets[0].data.push((data.cpu.systemLoad * 100).toFixed(2));
-  cpuChart.data.datasets[1].data.push((data.cpu.lavalinkLoad * 100).toFixed(2));
-  trimData(cpuChart);
-
-  // Players
-  playerChart.data.labels.push(now);
-  playerChart.data.datasets[0].data.push(data.players);
-  playerChart.data.datasets[1].data.push(data.playingPlayers);
-  trimData(playerChart);
-
-  memoryChart.update();
-  cpuChart.update();
-  playerChart.update();
-}
-
-function trimData(chart, max = 20) {
-  chart.data.labels = chart.data.labels.slice(-max);
-  chart.data.datasets.forEach(ds => {
-    ds.data = ds.data.slice(-max);
+function updateChart(chart, label, values) {
+  chart.data.labels.push(label);
+  chart.data.datasets.forEach((ds, i) => {
+    ds.data.push(values[i]);
+    if (ds.data.length > 10) ds.data.shift();
   });
+  if (chart.data.labels.length > 10) chart.data.labels.shift();
+  chart.update();
 }
 
-// Auto refresh
-setInterval(fetchStats, 60000);
+window.onload = () => {
+  cpuChart = createChart(document.getElementById("cpuChart"), "CPU Load", ["System", "Lavalink"], ["red", "orange"]);
+  memoryChart = createChart(document.getElementById("memoryChart"), "Memory", ["Free", "Used"], ["green", "red"]);
 
-// Init
-document.addEventListener("DOMContentLoaded", () => {
-  initCharts();
-  fetchStats();
-  AOS.init(); // animate on scroll lib
-});
+  AOS.init({ once: true, duration: 800 });
+
+  fetchAndUpdateStats();
+  setInterval(fetchAndUpdateStats, 60000);
+};
