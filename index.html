@@ -3,66 +3,46 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Harmonix Lavalink Monitor</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>Lavalink Monitor - Harmonix V4</title>
+  <link rel="stylesheet" href="public/style.css" />
+  <link rel="icon" href="public/favicon.ico" />
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet"/>
 </head>
-<body>
-  <header data-aos="fade-down">
-    <div class="logo">
-      <img src="https://cdn.discordapp.com/avatars/1356181162099347517/a2321a253715e89ceff6331342a98379.webp?size=512" alt="Logo" />
-      <h1>Harmonix Lavalink</h1>
-    </div>
-    <div class="status-badge">
-      <span id="status" class="offline">Offline</span>
-    </div>
+<body class="dark">
+  <header>
+    <img src="https://cdn.discordapp.com/avatars/1356181162099347517/a2321a253715e89ceff6331342a98379.webp?size=4096" alt="Header Logo" class="logo" />
+    <h1 class="title">Harmonix V4 Lavalink Monitor</h1>
   </header>
 
-  <main>
-    <!-- DEV INFO -->
-    <section class="dev-info" data-aos="fade-right">
-      <h2>Developer Info</h2>
-      <div class="dev-card">
-        <img src="https://cdn.discordapp.com/avatars/1356181162099347517/a2321a253715e89ceff6331342a98379.webp?size=512" alt="Dev" />
-        <div>
-          <h3>Yuvraj.apk</h3>
-          <p>Lead Developer</p>
-          <p>Discord: Yuvraj.apk#001</p>
-        </div>
-      </div>
-    </section>
+  <section id="stats" data-aos="fade-up">
+    <h2>Live Stats</h2>
+    <div class="stat-grid">
+      <div class="card" id="players">Players: <span>Loading...</span></div>
+      <div class="card" id="playingPlayers">Playing: <span>Loading...</span></div>
+      <div class="card" id="uptime">Uptime: <span>Loading...</span></div>
+      <div class="card" id="memory">Memory: <span>Loading...</span></div>
+      <div class="card" id="cpu">CPU: <span>Loading...</span></div>
+    </div>
+  </section>
 
-    <!-- STATS SECTION -->
-    <section class="stats" data-aos="fade-up">
-      <h2>Live Statistics</h2>
-      <div class="grid">
-        <div class="card"><strong>Players:</strong> <span id="players">0</span></div>
-        <div class="card"><strong>Playing:</strong> <span id="playingPlayers">0</span></div>
-        <div class="card"><strong>Uptime:</strong> <span id="uptime">0</span></div>
-        <div class="card"><strong>Free Mem:</strong> <span id="memFree">0</span></div>
-        <div class="card"><strong>Used Mem:</strong> <span id="memUsed">0</span></div>
-        <div class="card"><strong>CPU Cores:</strong> <span id="cpuCores">0</span></div>
-        <div class="card"><strong>CPU System:</strong> <span id="cpuSystemLoad">0%</span></div>
-        <div class="card"><strong>CPU Lavalink:</strong> <span id="cpuLavalinkLoad">0%</span></div>
-      </div>
-    </section>
+  <section id="charts" data-aos="zoom-in">
+    <canvas id="playersChart"></canvas>
+    <canvas id="memoryChart"></canvas>
+    <canvas id="cpuChart"></canvas>
+  </section>
 
-    <!-- CHARTS -->
-    <section class="charts" data-aos="fade-left">
-      <h2>System Load</h2>
-      <canvas id="cpuChart"></canvas>
+  <section id="dev" data-aos="fade-up">
+    <h2>Developer Info</h2>
+    <img src="https://cdn.discordapp.com/avatars/1356181162099347517/a2321a253715e89ceff6331342a98379.webp?size=4096" alt="Dev Pic" class="dev-pic"/>
+    <p>Created by <strong>Yuvraj.apk</strong></p>
+  </section>
 
-      <h2>Memory Usage</h2>
-      <canvas id="memChart"></canvas>
-    </section>
-  </main>
-
-  <footer data-aos="fade-up">
-    <p>Created by Yuvraj.apk | All Rights Reserved © 2025</p>
+  <footer>
+    <p>© 2025 Harmonix Lavalink Monitor</p>
   </footer>
 
-  <script src="script.js"></script>
-  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script> AOS.init(); </script>
+  <script type="module" src="public/script.js"></script>
 </body>
 </html>
