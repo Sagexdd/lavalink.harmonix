@@ -3,42 +3,37 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lavalink Monitor</title>
+  <title>Lavalink Monitor - Harmonix V4</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
 </head>
-<body data-theme="dark">
-  <header class="header-flex" data-aos="fade-down">
-    <img class="header-img" src="https://cdn.discordapp.com/avatars/1356181162099347517/a2321a253715e89ceff6331342a98379.webp?size=4096" alt="Header"/>
-    <h1>Lavalink Monitor</h1>
-    <button id="themeToggle">Toggle Theme</button>
+<body>
+  <header>
+    <img src="https://cdn.discordapp.com/avatars/1356181162099347517/a2321a253715e89ceff6331342a98379.webp?size=4096" alt="Header" />
+    <h1>Harmonix Lavalink Monitor</h1>
+    <button id="darkToggle">Toggle Dark Mode</button>
   </header>
 
-  <main data-aos="fade-up">
-    <section class="stats">
-      <h2 data-aos="fade-up">Live Lavalink Stats</h2>
-      <div class="stat-grid" id="stats">
-        <!-- Stats will be inserted here by JS -->
-      </div>
-    </section>
+  <section class="stats" id="statsSection">
+    <div class="stat-box" data-aos="fade-up"><h3>Players</h3><p id="players">Loading...</p></div>
+    <div class="stat-box" data-aos="fade-up"><h3>Playing Players</h3><p id="playingPlayers">Loading...</p></div>
+    <div class="stat-box" data-aos="fade-up"><h3>Uptime</h3><p id="uptime">Loading...</p></div>
+  </section>
 
-    <section class="charts" data-aos="zoom-in">
-      <canvas id="cpuChart"></canvas>
-      <canvas id="memChart"></canvas>
-    </section>
-  </main>
+  <section class="charts" data-aos="fade-up">
+    <canvas id="cpuChart"></canvas>
+    <canvas id="memoryChart"></canvas>
+  </section>
 
-  <footer data-aos="fade-up">
-    <div class="dev-section">
-      <img src="https://cdn.discordapp.com/avatars/1356181162099347517/a2321a253715e89ceff6331342a98379.webp?size=1024" alt="Dev" class="dev-img" />
+  <footer>
+    <div class="dev">
+      <img src="https://cdn.discordapp.com/avatars/1356181162099347517/a2321a253715e89ceff6331342a98379.webp?size=4096" alt="Dev" />
       <p>Created by Yuvraj.apk</p>
     </div>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-  <script>AOS.init({ duration: 800, once: true, easing: 'ease-in-out' });</script>
   <script src="script.js"></script>
 </body>
 </html>
