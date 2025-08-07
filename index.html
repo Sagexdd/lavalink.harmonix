@@ -3,46 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lavalink Monitor - Harmonix V4</title>
-  <link rel="stylesheet" href="public/style.css" />
-  <link rel="icon" href="public/favicon.ico" />
-  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet"/>
+  <title>Lavalink Monitor</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="https://cdn.discordapp.com/avatars/1356181162099347517/a2321a253715e89ceff6331342a98379.webp?size=64">
 </head>
-<body class="dark">
-  <header>
-    <img src="https://cdn.discordapp.com/avatars/1356181162099347517/a2321a253715e89ceff6331342a98379.webp?size=4096" alt="Header Logo" class="logo" />
-    <h1 class="title">Harmonix V4 Lavalink Monitor</h1>
+<body>
+  <header class="header">
+    <img src="https://cdn.discordapp.com/avatars/1356181162099347517/a2321a253715e89ceff6331342a98379.webp?size=128" alt="Logo" class="logo" />
+    <h1 class="title">Harmonix Lavalink V4 Monitor</h1>
   </header>
 
-  <section id="stats" data-aos="fade-up">
-    <h2>Live Stats</h2>
-    <div class="stat-grid">
-      <div class="card" id="players">Players: <span>Loading...</span></div>
-      <div class="card" id="playingPlayers">Playing: <span>Loading...</span></div>
-      <div class="card" id="uptime">Uptime: <span>Loading...</span></div>
-      <div class="card" id="memory">Memory: <span>Loading...</span></div>
-      <div class="card" id="cpu">CPU: <span>Loading...</span></div>
-    </div>
-  </section>
+  <main>
+    <section class="status">
+      <h2>Status: <span id="status">Loading...</span></h2>
+      <h3>Uptime: <span id="uptime">0</span></h3>
+    </section>
 
-  <section id="charts" data-aos="zoom-in">
-    <canvas id="playersChart"></canvas>
+    <section class="stats">
+      <div class="card"><strong>Players:</strong> <span id="players">0</span></div>
+      <div class="card"><strong>Playing:</strong> <span id="playingPlayers">0</span></div>
+      <div class="card"><strong>CPU Load:</strong> <span id="cpuLoad">0%</span></div>
+      <div class="card"><strong>Memory Used:</strong> <span id="memoryUsed">0 MB</span></div>
+    </section>
+
     <canvas id="memoryChart"></canvas>
     <canvas id="cpuChart"></canvas>
-  </section>
+  </main>
 
-  <section id="dev" data-aos="fade-up">
-    <h2>Developer Info</h2>
-    <img src="https://cdn.discordapp.com/avatars/1356181162099347517/a2321a253715e89ceff6331342a98379.webp?size=4096" alt="Dev Pic" class="dev-pic"/>
-    <p>Created by <strong>Yuvraj.apk</strong></p>
-  </section>
-
-  <footer>
-    <p>© 2025 Harmonix Lavalink Monitor</p>
+  <footer class="footer">
+    <p>Created by <img class="dev-pic" src="https://cdn.discordapp.com/avatars/1356181162099347517/a2321a253715e89ceff6331342a98379.webp?size=128" alt="Dev" /> Yuvraj.apk</p>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-  <script> AOS.init(); </script>
-  <script type="module" src="public/script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js" type="module"></script>
 </body>
 </html>
