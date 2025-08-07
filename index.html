@@ -2,38 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lavalink Monitor - Harmonix V4</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Harmonix Lavalink Monitor</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <header>
-    <img src="https://cdn.discordapp.com/avatars/1356181162099347517/a2321a253715e89ceff6331342a98379.webp?size=4096" alt="Header" />
+    <img src="https://cdn.discordapp.com/avatars/1356181162099347517/a2321a253715e89ceff6331342a98379.webp?size=4096" alt="Header Image" />
     <h1>Harmonix Lavalink Monitor</h1>
-    <button id="darkToggle">Toggle Dark Mode</button>
   </header>
 
-  <section class="stats" id="statsSection">
-    <div class="stat-box" data-aos="fade-up"><h3>Players</h3><p id="players">Loading...</p></div>
-    <div class="stat-box" data-aos="fade-up"><h3>Playing Players</h3><p id="playingPlayers">Loading...</p></div>
-    <div class="stat-box" data-aos="fade-up"><h3>Uptime</h3><p id="uptime">Loading...</p></div>
-  </section>
+  <main>
+    <section class="stats-grid">
+      <div class="stat-box" data-aos="fade-up"><h3>Uptime</h3><p id="uptime">Loading...</p></div>
+      <div class="stat-box" data-aos="fade-up"><h3>Players</h3><p id="players">Loading...</p></div>
+      <div class="stat-box" data-aos="fade-up"><h3>Playing Players</h3><p id="playingPlayers">Loading...</p></div>
+      <div class="stat-box" data-aos="fade-up"><h3>Memory Used</h3><p id="memoryUsed">Loading...</p></div>
+      <div class="stat-box" data-aos="fade-up"><h3>System Load</h3><p id="systemLoad">Loading...</p></div>
+      <div class="stat-box" data-aos="fade-up"><h3>Lavalink Load</h3><p id="lavalinkLoad">Loading...</p></div>
+    </section>
 
-  <section class="charts" data-aos="fade-up">
-    <canvas id="cpuChart"></canvas>
-    <canvas id="memoryChart"></canvas>
-  </section>
+    <section class="charts" data-aos="fade-up">
+      <canvas id="memoryChart"></canvas>
+      <canvas id="cpuChart"></canvas>
+      <canvas id="playerChart"></canvas>
+    </section>
+
+    <section class="dev-info" data-aos="fade-up">
+      <img src="https://cdn.discordapp.com/avatars/977229749539713116/f4d1534d19ea283c18cde9042f63de6e.webp?size=512" alt="Dev Image" />
+      <div>
+        <h3>Developer Info</h3>
+        <p><strong>Name:</strong> Yuvraj</p>
+        <p><strong>Discord:</strong> Yuvraj.apk</p>
+        <p><strong>Project:</strong> Harmonix Lavalink V4 Monitor</p>
+      </div>
+    </section>
+  </main>
 
   <footer>
-    <div class="dev">
-      <img src="https://cdn.discordapp.com/avatars/1356181162099347517/a2321a253715e89ceff6331342a98379.webp?size=4096" alt="Dev" />
-      <p>Created by Yuvraj.apk</p>
-    </div>
+    <p>© 2025 Created by Yuvraj.apk</p>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
   <script src="script.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>AOS.init();</script>
 </body>
 </html>
