@@ -1,40 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Harmonix Lavalink Monitor</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-  <header>
-    <img src="https://cdn.discordapp.com/avatars/1356181162099347517/a2321a253715e89ceff6331342a98379.webp?size=4096" alt="Header Image" />
-    <h1>Harmonix Lavalink Monitor</h1>
-  </header>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Harmonix Lavalink Monitor</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <header class="main-header" data-aos="fade-down">
+      <div class="header-content">
+        <img src="https://cdn.discordapp.com/avatars/1356181162099347517/a2321a253715e89ceff6331342a98379.webp?size=512" alt="Dev Logo" class="logo"/>
+        <h1>Harmonix Lavalink Monitor</h1>
+      </div>
+    </header>
 
-  <main>
-    <section class="stats-grid">
-      <div class="stat-box" data-aos="fade-up"><h3>Uptime</h3><p id="uptime">Loading...</p></div>
-      <div class="stat-box" data-aos="fade-up"><h3>Players</h3><p id="players">Loading...</p></div>
-      <div class="stat-box" data-aos="fade-up"><h3>Playing Players</h3><p id="playingPlayers">Loading...</p></div>
-      <div class="stat-box" data-aos="fade-up"><h3>Memory Used</h3><p id="memoryUsed">Loading...</p></div>
-      <div class="stat-box" data-aos="fade-up"><h3>System Load</h3><p id="systemLoad">Loading...</p></div>
-      <div class="stat-box" data-aos="fade-up"><h3>Lavalink Load</h3><p id="lavalinkLoad">Loading...</p></div>
+    <section class="stats" data-aos="fade-up">
+      <h2 class="section-title">Live Lavalink Stats</h2>
+      <div class="cards-container">
+        <div class="card glow"><span>Players</span><div id="players">0</div></div>
+        <div class="card glow"><span>Playing</span><div id="playingPlayers">0</div></div>
+        <div class="card glow"><span>Uptime</span><div id="uptime">0</div></div>
+        <div class="card glow"><span>CPU Cores</span><div id="cpuCores">0</div></div>
+        <div class="card glow"><span>System Load</span><div id="systemLoad">0</div></div>
+        <div class="card glow"><span>Lavalink Load</span><div id="lavalinkLoad">0</div></div>
+      </div>
     </section>
 
     <section class="charts" data-aos="fade-up">
-      <canvas id="memoryChart"></canvas>
-      <canvas id="cpuChart"></canvas>
-      <canvas id="playerChart"></canvas>
+      <h2 class="section-title">System Charts</h2>
+      <div class="chart-box">
+        <canvas id="cpuChart"></canvas>
+      </div>
+      <div class="chart-box">
+        <canvas id="memoryChart"></canvas>
+      </div>
     </section>
 
-    <section class="dev-info" data-aos="fade-up">
-      <img src="https://cdn.discordapp.com/avatars/977229749539713116/f4d1534d19ea283c18cde9042f63de6e.webp?size=512" alt="Dev Image" />
-      <div>
-        <h3>Developer Info</h3>
-        <p><strong>Name:</strong> Yuvraj</p>
+    <footer data-aos="fade-up">
+      <div class="dev-info">
+        <img src="https://cdn.discordapp.com/avatars/977229749539713116/f4d1534d19ea283c18cde9042f63de6e.webp?size=128" class="dev-pic" />
+        <div>
+          <h3>Yuvraj.apk</h3>
+          <p>Developer</p>
+          <small>Monitoring Harmonix Lavalink v4</small>
+        </div>
+      </div>
+      <p class="footer-note">Auto-refreshes every 60 seconds • ❤️ Made for Harmonix</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      AOS.init();
+    </script>
+  </body>
+</html>        <p><strong>Name:</strong> Yuvraj</p>
         <p><strong>Discord:</strong> Yuvraj.apk</p>
         <p><strong>Project:</strong> Harmonix Lavalink V4 Monitor</p>
       </div>
