@@ -1,40 +1,124 @@
-import { getLavalinkStats } from './api/stats.js';
+const API_URL = "/api/stats.js";
+const refreshRate = 60000; // 60 seconds
 
-// DOM elements
-const cards = {
-  players: document.getElementById("players"),
-  playingPlayers: document.getElementById("playingPlayers"),
-  uptime: document.getElementById("uptime"),
-  systemLoad: document.getElementById("systemLoad"),
-  lavalinkLoad: document.getElementById("lavalinkLoad"),
-  memoryFree: document.getElementById("memoryFree"),
-  memoryUsed: document.getElementById("memoryUsed")
-};
+let memoryChart, cpuChart;
 
-let cpuChart, memoryChart;
+async function fetchStats() {
+  try {
+    const response = await fetch(API_URL);
+    if (!response.ok) throw new Error("Failed to fetch");
 
-function formatUptime(ms) {
-  let seconds = Math.floor(ms / 1000);
-  let minutes = Math.floor(seconds / 60);
-  let hours = Math.floor(minutes / 60);
-  let days = Math.floor(hours / 24);
+    const data = await response.json();
 
-  seconds %= 60;
-  minutes %= 60;
-  hours %= 24;
-
-  return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    updateStatus(true);
+    updateStats(data);
+    updateCharts(data);
+  } catch {
+    updateStatus(false);
+    updateStats(null);
+    updateCharts(null);
+  }
 }
 
-async function fetchAndUpdateStats() {
-  const data = await getLavalinkStats();
-  if (!data) {
-    Object.values(cards).forEach(el => el.textContent = "Error");
-    return;
-  }
+function updateStatus(online) {
+  const statusSpan = document.getElementById("status");
+  statusSpan.className = online ? "online" : "offline";
+  statusSpan.textContent = online ? "Online" : "Offline";
+}
 
-  cards.players.textContent = data.players ?? 0;
-  cards.playingPlayers.textContent = data.playingPlayers ?? 0;
+function formatBytes(bytes) {
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+  if (!bytes) return "0 B";
+  const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+  return `${(bytes / Math.pow(1024, i)).toFixed(2)} ${sizes[i]}`;
+}
+
+function formatUptime(ms) {
+  const seconds = Math.floor(ms / 1000);
+  const d = Math.floor(seconds / 86400);
+  const h = Math.floor((seconds % 86400) / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+  return `${d}d ${h}h ${m}m ${s}s`;
+}
+
+function updateStats(data) {
+  document.getElementById("players").textContent = data?.players ?? 0;
+  document.getElementById("playingPlayers").textContent = data?.playingPlayers ?? 0;
+  document.getElementById("uptime").textContent = data?.uptime ? formatUptime(data.uptime) : "N/A";
+
+  const mem = data?.memory ?? {};
+  document.getElementById("memFree").textContent = formatBytes(mem.free);
+  document.getElementById("memUsed").textContent = formatBytes(mem.used);
+  document.getElementById("memAllocated").textContent = formatBytes(mem.allocated);
+  document.getElementById("memReservable").textContent = formatBytes(mem.reservable);
+
+  const cpu = data?.cpu ?? {};
+  document.getElementById("cpuCores").textContent = cpu.cores ?? "N/A";
+  document.getElementById("cpuSystem").textContent = cpu.systemLoad?.toFixed(2) ?? "N/A";
+  document.getElementById("cpuLavalink").textContent = cpu.lavalinkLoad?.toFixed(2) ?? "N/A";
+}
+
+function updateCharts(data) {
+  const mem = data?.memory ?? {};
+  const cpu = data?.cpu ?? {};
+
+  memoryChart.data.datasets[0].data = [
+    mem.used ?? 0,
+    mem.free ?? 0,
+    (mem.reservable ?? 0) - (mem.allocated ?? 0)
+  ];
+  memoryChart.update();
+
+  cpuChart.data.datasets[0].data = [
+    cpu.lavalinkLoad ?? 0,
+    cpu.systemLoad ?? 0,
+    1 - ((cpu.lavalinkLoad ?? 0) + (cpu.systemLoad ?? 0))
+  ];
+  cpuChart.update();
+}
+
+function initCharts() {
+  const memCtx = document.getElementById("memoryChart").getContext("2d");
+  const cpuCtx = document.getElementById("cpuChart").getContext("2d");
+
+  memoryChart = new Chart(memCtx, {
+    type: "doughnut",
+    data: {
+      labels: ["Used", "Free", "Available"],
+      datasets: [{
+        data: [0, 0, 0],
+        backgroundColor: ["#ff4d4d", "#66ff66", "#999"]
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { position: 'bottom' } }
+    }
+  });
+
+  cpuChart = new Chart(cpuCtx, {
+    type: "doughnut",
+    data: {
+      labels: ["Lavalink Load", "System Load", "Idle"],
+      datasets: [{
+        data: [0, 0, 1],
+        backgroundColor: ["#ff6666", "#ffcc66", "#999"]
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { position: 'bottom' } }
+    }
+  });
+}
+
+// Initial
+initCharts();
+fetchStats();
+
+// Auto refresh every 60s
+setInterval(fetchStats, refreshRate);  cards.playingPlayers.textContent = data.playingPlayers ?? 0;
   cards.uptime.textContent = formatUptime(data.uptime ?? 0);
   cards.systemLoad.textContent = (data.cpu?.systemLoad * 100).toFixed(2) + "%";
   cards.lavalinkLoad.textContent = (data.cpu?.lavalinkLoad * 100).toFixed(2) + "%";
