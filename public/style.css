@@ -1,0 +1,82 @@
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: #121212;
+  color: #fff;
+  transition: background 0.3s;
+}
+
+header {
+  text-align: center;
+  padding: 1rem;
+  background: #1a1a1a;
+  border-bottom: 2px solid red;
+}
+
+.logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+.title {
+  font-size: 1.6rem;
+  margin-top: 0.5rem;
+  color: #ff3c3c;
+  font-weight: 600;
+}
+
+.stat-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem auto;
+  max-width: 900px;
+}
+
+.card {
+  background: #1e1e1e;
+  border: 1px solid #ff3c3c;
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  font-size: 1.1rem;
+  box-shadow: 0 0 10px red;
+  transition: 0.3s;
+}
+
+.card span {
+  font-weight: bold;
+  color: #fff;
+}
+
+canvas {
+  max-width: 600px;
+  margin: 2rem auto;
+  display: block;
+  background: #1a1a1a;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+#dev {
+  text-align: center;
+  margin: 2rem auto;
+}
+
+.dev-pic {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  margin-bottom: 0.5rem;
+  border: 2px solid red;
+}
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  background: #1a1a1a;
+  border-top: 2px solid red;
+  color: #999;
+}
