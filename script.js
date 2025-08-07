@@ -1,92 +1,82 @@
-const STATS_URL = "http://pnode1.danbot.host:1186/v4/stats";
-const AUTH = "Yuvraj.apk#001";
+AOS.init();
 
-const statsDiv = document.getElementById("stats");
-const cpuCtx = document.getElementById("cpuChart").getContext("2d");
-const memCtx = document.getElementById("memChart").getContext("2d");
+const cpuChartCtx = document.getElementById("cpuChart").getContext("2d");
+const memoryChartCtx = document.getElementById("memoryChart").getContext("2d");
 
-let cpuChart, memChart;
+let cpuChart, memoryChart;
+
+document.getElementById("darkToggle").onclick = () => {
+  document.body.classList.toggle("light");
+};
+
+function formatDuration(ms) {
+  const sec = Math.floor(ms / 1000);
+  const d = Math.floor(sec / 86400);
+  const h = Math.floor((sec % 86400) / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = sec % 60;
+  return `${d}d ${h}h ${m}m ${s}s`;
+}
 
 async function fetchStats() {
-  try {
-    const res = await fetch(STATS_URL, {
-      headers: { Authorization: AUTH },
-    });
-    const data = await res.json();
-
-    updateStatsUI(data);
-    updateCharts(data);
-
-  } catch (err) {
-    statsDiv.innerHTML = "<p>Failed to load stats.</p>";
-  }
+  const res = await fetch("/api/stats");
+  if (!res.ok) throw new Error("Failed to load stats");
+  return res.json();
 }
 
-function updateStatsUI(data) {
-  statsDiv.innerHTML = `
-    <div><strong>Players:</strong> ${data.players}</div>
-    <div><strong>Playing:</strong> ${data.playingPlayers}</div>
-    <div><strong>Uptime:</strong> ${(data.uptime / 3600000).toFixed(1)} hrs</div>
-    <div><strong>CPU Load:</strong> ${(data.cpu.lavalinkLoad * 100).toFixed(2)}%</div>
-    <div><strong>System Load:</strong> ${(data.cpu.systemLoad * 100).toFixed(2)}%</div>
-    <div><strong>Memory Used:</strong> ${(data.memory.used / 1024 / 1024).toFixed(1)} MB</div>
-  `;
-}
-
-function updateCharts(data) {
-  const cpuLoad = (data.cpu.lavalinkLoad * 100).toFixed(2);
-  const memUsed = (data.memory.used / 1024 / 1024).toFixed(1);
+function updateCharts(cpu, mem) {
+  const cpuLoad = [cpu.systemLoad, cpu.lavalinkLoad];
+  const memUsage = [mem.used / 1024 / 1024, mem.free / 1024 / 1024];
 
   if (!cpuChart) {
-    cpuChart = new Chart(cpuCtx, {
-      type: "line",
+    cpuChart = new Chart(cpuChartCtx, {
+      type: "doughnut",
       data: {
-        labels: ["Now"],
-        datasets: [{
-          label: "CPU Load (%)",
-          data: [cpuLoad],
-          borderWidth: 2,
-        }],
+        labels: ["System Load", "Lavalink Load"],
+        datasets: [{ data: cpuLoad }],
       },
     });
   } else {
-    cpuChart.data.labels.push(new Date().toLocaleTimeString());
-    cpuChart.data.datasets[0].data.push(cpuLoad);
-    if (cpuChart.data.labels.length > 10) {
-      cpuChart.data.labels.shift();
-      cpuChart.data.datasets[0].data.shift();
-    }
+    cpuChart.data.datasets[0].data = cpuLoad;
     cpuChart.update();
   }
 
-  if (!memChart) {
-    memChart = new Chart(memCtx, {
-      type: "line",
+  if (!memoryChart) {
+    memoryChart = new Chart(memoryChartCtx, {
+      type: "bar",
       data: {
-        labels: ["Now"],
-        datasets: [{
-          label: "Memory Used (MB)",
-          data: [memUsed],
-          borderWidth: 2,
-        }],
+        labels: ["Used MB", "Free MB"],
+        datasets: [
+          {
+            label: "Memory",
+            data: memUsage,
+            backgroundColor: ["red", "gray"],
+          },
+        ],
       },
     });
   } else {
-    memChart.data.labels.push(new Date().toLocaleTimeString());
-    memChart.data.datasets[0].data.push(memUsed);
-    if (memChart.data.labels.length > 10) {
-      memChart.data.labels.shift();
-      memChart.data.datasets[0].data.shift();
-    }
-    memChart.update();
+    memoryChart.data.datasets[0].data = memUsage;
+    memoryChart.update();
   }
 }
 
-// Theme toggle
-document.getElementById("themeToggle").onclick = () => {
-  const body = document.body;
-  body.dataset.theme = body.dataset.theme === "light" ? "dark" : "light";
-};
+async function updateStats() {
+  try {
+    const data = await fetchStats();
 
-fetchStats();
-setInterval(fetchStats, 60000); // Refresh every 60s
+    document.getElementById("players").textContent = data.players;
+    document.getElementById("playingPlayers").textContent = data.playingPlayers;
+    document.getElementById("uptime").textContent = formatDuration(data.uptime);
+
+    updateCharts(data.cpu, data.memory);
+  } catch (err) {
+    document.getElementById("players").textContent = "Error";
+    document.getElementById("playingPlayers").textContent = "Error";
+    document.getElementById("uptime").textContent = "Error";
+    console.error(err);
+  }
+}
+
+updateStats();
+setInterval(updateStats, 60000);
