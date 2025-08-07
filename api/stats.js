@@ -1,18 +1,14 @@
-export async function getLavalinkStats() {
-  const API_URL = "http://pnode1.danbot.host:1186/v4/stats";
-  const AUTH_HEADER = "Yuvraj.apk#001";
-
+export default async function handler(req, res) {
   try {
-    const res = await fetch(API_URL, {
-      headers: { Authorization: AUTH_HEADER },
-    });
+    const stats = await fetch("http://pnode1.danbot.host:1186/v4/stats", {
+      headers: {
+        Authorization: "Yuvraj.apk#001"
+      }
+    }).then(r => r.json());
 
-    if (!res.ok) throw new Error("Request failed");
-
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching Lavalink stats:", error);
-    return null;
+    res.setHeader("Cache-Control", "no-cache");
+    res.status(200).json(stats);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch Lavalink stats." });
   }
 }
