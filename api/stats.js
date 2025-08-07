@@ -1,21 +1,18 @@
-export default async function handler(req, res) {
-  const lavalinkHost = "http://pnode1.danbot.host:1186/v4/stats";
-  const password = "Yuvraj.apk#001";
+export async function getLavalinkStats() {
+  const API_URL = "http://pnode1.danbot.host:1186/v4/stats";
+  const AUTH_HEADER = "Yuvraj.apk#001";
 
   try {
-    const response = await fetch(lavalinkHost, {
-      headers: {
-        Authorization: password
-      }
+    const res = await fetch(API_URL, {
+      headers: { Authorization: AUTH_HEADER },
     });
 
-    if (!response.ok) {
-      return res.status(500).json({ error: "Failed to fetch Lavalink stats" });
-    }
+    if (!res.ok) throw new Error("Request failed");
 
-    const data = await response.json();
-    return res.status(200).json(data);
+    const data = await res.json();
+    return data;
   } catch (error) {
-    return res.status(500).json({ error: "Error fetching Lavalink stats" });
+    console.error("Error fetching Lavalink stats:", error);
+    return null;
   }
 }
